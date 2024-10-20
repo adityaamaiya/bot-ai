@@ -11,12 +11,14 @@ import {
   Snackbar,
   IconButton,
   Drawer,
+  useMediaQuery,
 } from "@mui/material";
 import logo from "./logo.svg";
 import editIcon from "./components/assets/edit.svg";
 import logo2 from "./components/assets/logo2.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import hamburgerIcon from "./components/assets/hamburger.svg";
+import ResponseCard from "./components/ResponseCard/ResponseCard";
 
 function App() {
   const apiKey = "AIzaSyATDP5navPLLFX3-o5gm9RsXYmoJxEbYVc"; // Use your actual API key
@@ -27,6 +29,17 @@ function App() {
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  const suggestions = [
+    "Hi, what is the weather",
+    "Hi, what is my location",
+    "Hi, what is the temperature",
+    "Hi, how are you",
+  ];
+
+  const displayedSuggestions = isMobile ? suggestions.slice(0, 3) : suggestions;
 
   const handleAsk = async () => {
     setIsLoading(true);
@@ -39,13 +52,18 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prompt: {
-            text: input,
-          },
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: input }],
+            },
+          ],
         }),
       });
       const data = await response.json();
-      setResponse(data.candidates[0].content);
+      console.log("API Response:", data);
+      setResponse(data?.candidates[0].content.parts[0].text);
+      console.log(data?.candidates[0].content.parts[0].text);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError(error);
@@ -104,19 +122,39 @@ function App() {
         </Drawer>
 
         {/* Hamburger Icon for Mobile */}
+
         <Box
-          sx={{
-            display: { xs: "flex", md: "none" }, // Show on mobile
+          sxx={{
+            display: "flex",
             alignItems: "center",
-            justifyContent: "flex-end",
-            backgroundColor: "white",
-            width: "100%",
-            padding: "10px",
+            flexDirection: "row",
+            justifyContent: "center",
           }}
         >
-          <IconButton onClick={toggleDrawer(true)}>
-            <img src={hamburgerIcon} alt="toggle sidebar" />
-          </IconButton>
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{
+              fontSize: { xs: "24px", md: "28px" }, // Responsive font size
+              lineHeight: "32px",
+              color: "#9785BA",
+              fontWeight: "700",
+              fontFamily: "Ubuntu",
+              marginTop: 2,
+              width: "max-content",
+              marginLeft: { xs: 0, md: 5 }, // Add margin on mobile,
+              display: "flex",
+              aliignItems: "center",
+            }}
+          >
+            <IconButton
+              sx={{ display: { xs: "flex", md: "none" }, width: "max-content" }}
+              onClick={toggleDrawer(true)}
+            >
+              <img src={hamburgerIcon} alt="toggle sidebar" />
+            </IconButton>
+            Bot AI
+          </Typography>
         </Box>
 
         <Box
@@ -130,20 +168,7 @@ function App() {
             padding: { xs: 2, md: 0 }, // Add padding on mobile
           }}
         >
-          <Typography
-            variant="h1"
-            component="h1"
-            sx={{
-              fontSize: { xs: "24px", md: "28px" }, // Responsive font size
-              lineHeight: "32px",
-              color: "#9785BA",
-              fontWeight: "700",
-              fontFamily: "Ubuntu",
-              marginTop: 2,
-            }}
-          >
-            Bot AI
-          </Typography>
+          <ResponseCard response={response} />
           <Typography
             variant="h1"
             component="h1"
@@ -154,6 +179,7 @@ function App() {
               fontWeight: "500",
               fontFamily: "Ubuntu",
               marginTop: 1,
+              display: "none",
             }}
           >
             How Can I Help You Today?
@@ -163,11 +189,12 @@ function App() {
             alt="logo2"
             style={{
               marginTop: 20,
+              display: "none",
             }}
           />
           <Box
             sx={{
-              display: "flex",
+              display: "none",
               flexWrap: "wrap",
               width: "100%",
               gap: "10px", // Reduced gap for mobile
@@ -176,17 +203,18 @@ function App() {
               marginTop: 2,
             }}
           >
-            <SuggestionCard suggestion={"Hi, what is the weather"} />
-            <SuggestionCard suggestion={"Hi, what is my location"} />
-            <SuggestionCard suggestion={"Hi, what is the temperature"} />
-            <SuggestionCard suggestion={"Hi, how are you"} />
+            {displayedSuggestions.map((suggestion, index) => (
+              <SuggestionCard key={index} suggestion={suggestion} />
+            ))}
           </Box>
           <Box
             sx={{
               display: "flex",
-              flexDirection: { xs: "column", md: "row" }, // Responsive flex direction
+              position: "fixed",
+              bottom: 30,
+              padding: "10px",
               alignItems: "center",
-              gap: 2,
+              gap: { xs: "15px", md: "20px" }, // Reduced gap for mobile
               marginTop: 2,
             }}
           >
@@ -204,7 +232,7 @@ function App() {
                   height: "41px",
                   lineHeight: "41px",
                 },
-                width: { xs: "100%", md: "65%" }, // Responsive width
+                width: { xs: "100%", md: "746px" }, // Responsive width
               }}
             />
             <Button
@@ -218,7 +246,7 @@ function App() {
                 fontWeight: "400",
                 fontSize: { xs: "16px", md: "20px" }, // Responsive font size
                 textTransform: "none",
-                width: { xs: "100%", md: "auto" }, // Full width on mobile
+                width: { xs: "63px", md: "73px" }, // Full width on mobile
               }}
             >
               Ask
@@ -234,7 +262,7 @@ function App() {
                 fontWeight: "400",
                 fontSize: { xs: "16px", md: "20px" }, // Responsive font size
                 textTransform: "none",
-                width: { xs: "100%", md: "auto" }, // Full width on mobile
+                width: { xs: "63px", md: "73px" }, // Full width on mobile
               }}
             >
               Save
@@ -250,7 +278,12 @@ function App() {
         onClose={handleSnackbarClose}
         message={error ? "An error occurred. Please try again." : ""}
         action={
-          <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleSnackbarClose}
+          >
             <CloseIcon fontSize="small" />
           </IconButton>
         }
@@ -262,7 +295,10 @@ function App() {
 const SidebarContent = () => (
   <Box
     sx={{
-      padding: 2, // Add some padding
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "space-between", // Changed for better alignment
       width: "100%", // Full width
     }}
   >
@@ -273,7 +309,7 @@ const SidebarContent = () => (
         display: "flex",
         flexWrap: "wrap",
         flexDirection: "row",
-        justifyContent: "space-between", // Changed for better alignment
+        justifyContent: "space-around", // Changed for better alignment
         alignItems: "center",
         backgroundColor: "#D7C7F4",
         marginBottom: "10px",
@@ -312,7 +348,8 @@ const SidebarContent = () => (
         background: "#D7C7F4",
         fontWeight: "700",
         fontFamily: "Ubuntu",
-        width: "100%", // Full width
+        textAlign: "center",
+        width: "90%", // Full width
         height: "39px",
         display: "flex",
         alignItems: "center",

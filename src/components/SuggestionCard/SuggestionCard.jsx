@@ -7,8 +7,8 @@ export default function SuggestionCard({ suggestion }) {
   return (
     <Card
       sx={{
-        width: "40%",
-        height: "15%",
+        width: {xs: "100%", md: "40%"},
+        height: {xs: "30%", md: "40%"},
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-start",
@@ -23,7 +23,7 @@ export default function SuggestionCard({ suggestion }) {
           variant="h2"
           component="h2"
           sx={{
-            fontSize: "20px",
+            fontSize: {xs: "16px", md: "20px"},
             lineHeight: "23px",
             fontFamily: "Ubuntu",
             fontWeight: "700",
@@ -37,7 +37,7 @@ export default function SuggestionCard({ suggestion }) {
           variant="h3"
           component="h3"
           sx={{
-            fontSize: "16px",
+            fontSize: {xs: "14px", md: "16px"},
             lineHeight: "22px",
             fontFamily: "Open Sans",
             fontWeight: "400",
