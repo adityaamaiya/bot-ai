@@ -19,11 +19,17 @@ import logo2 from "./components/assets/logo2.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import hamburgerIcon from "./components/assets/hamburger.svg";
 import ResponseCard from "./components/ResponseCard/ResponseCard";
+import SidebarComponent from "./components/Sidebar/SidebarComponent";
 
 function App() {
   const apiKey = "AIzaSyATDP5navPLLFX3-o5gm9RsXYmoJxEbYVc"; // Use your actual API key
   const [input, setInput] = React.useState("");
-  const [response, setResponse] = React.useState("");
+  const [responseArrayState, setResponseArrayState] = React.useState([]); // Use state for responses
+  const [savedResponses, setSavedResponses] = React.useState(() => {
+    const savedResponses = localStorage.getItem("saved-response");
+    return savedResponses ? JSON.parse(savedResponses) : [];
+  });
+
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
@@ -42,9 +48,15 @@ function App() {
   const displayedSuggestions = isMobile ? suggestions.slice(0, 3) : suggestions;
 
   const handleAsk = async () => {
+    if (!input.trim()) {
+      setError("Input cannot be empty"); // Handle empty input
+      setSnackbarOpen(true);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
-    setResponse("");
+
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -60,20 +72,73 @@ function App() {
           ],
         }),
       });
+
       const data = await response.json();
-      console.log("API Response:", data);
-      setResponse(data?.candidates[0].content.parts[0].text);
-      console.log(data?.candidates[0].content.parts[0].text);
+
+      if (!data?.candidates || data.candidates.length === 0) {
+        throw new Error("No valid response from the server");
+      }
+
+      const newResponse = {
+        prompt: input,
+        response: data?.candidates[0].content.parts[0].text.replace(
+          /\*\*(.*?)\*\*/g,
+          "$1"
+        ),
+      };
+
+      // Update response state and localStorage
+      setResponseArrayState((prev) => {
+        const updatedResponses = [...prev, newResponse];
+
+        return updatedResponses;
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError(error);
+      setError(error.message || "An error occurred. Please try again.");
       setSnackbarOpen(true);
     } finally {
       setIsLoading(false);
+      setInput("");
     }
   };
 
+  const getDateTime = () => {
+    const currentTime = new Date();
+
+    // Get date parts
+    const day = currentTime.getDate().toString().padStart(2, "0");
+    const month = (currentTime.getMonth() + 1).toString().padStart(2, "0"); // Month is 0-based
+    const year = currentTime.getFullYear();
+
+    // Get time parts
+    const hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+    // Combine date and time
+    const formattedDate = `${day}-${month}-${year}`;
+    const formattedTime = `${formattedHours}:${formattedMinutes} ${ampm}`;
+
+    return `${formattedDate} ${formattedTime}`;
+  };
+
   const handleSave = () => {
+    const savedResponse = {
+      time: getDateTime(),
+      response: responseArrayState,
+    };
+    setSavedResponses((prev) => {
+      const updatedSavedResponse = [...prev, savedResponse];
+      localStorage.setItem(
+        "saved-response",
+        JSON.stringify(updatedSavedResponse)
+      ); // Save the updated state
+      return updatedSavedResponse;
+    });
+    // Save the updated state
     console.log("Save button clicked");
   };
 
@@ -113,12 +178,12 @@ function App() {
           }}
         >
           {/* Sidebar Content */}
-          <SidebarContent />
+          <SidebarComponent savedResponse={savedResponses} />
         </Box>
 
         {/* Mobile Drawer */}
         <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-          <SidebarContent />
+          <SidebarComponent savedResponse={savedResponses} />
         </Drawer>
 
         {/* Hamburger Icon for Mobile */}
@@ -166,9 +231,13 @@ function App() {
             overflowY: "auto",
             width: { md: "75%", xs: "100%" }, // Change width based on screen size
             padding: { xs: 2, md: 0 }, // Add padding on mobile
+            height: { xs: "450px", md: "589px" },
+            marginTop: { xs: 2, md: 7 }, // Add margin on mobile
           }}
         >
-          <ResponseCard response={response} />
+          {responseArrayState.map((response, index) => (
+            <ResponseCard key={index} response={response} />
+          ))}
           <Typography
             variant="h1"
             component="h1"
@@ -291,76 +360,5 @@ function App() {
     </ThemeProvider>
   );
 }
-
-const SidebarContent = () => (
-  <Box
-    sx={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "space-between", // Changed for better alignment
-      width: "100%", // Full width
-    }}
-  >
-    <Box
-      sx={{
-        width: "100%",
-        height: "47px",
-        display: "flex",
-        flexWrap: "wrap",
-        flexDirection: "row",
-        justifyContent: "space-around", // Changed for better alignment
-        alignItems: "center",
-        backgroundColor: "#D7C7F4",
-        marginBottom: "10px",
-      }}
-    >
-      <img
-        src={logo}
-        alt="logo"
-        style={{
-          filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
-        }}
-      />
-      <Typography
-        variant="h2"
-        component="h2"
-        sx={{
-          fontSize: "20px",
-          lineHeight: "23px",
-          color: "#000000",
-          fontWeight: "400",
-          fontFamily: "Ubuntu",
-        }}
-      >
-        New Chat
-      </Typography>
-      <img src={editIcon} alt="editIcon" style={{ cursor: "pointer" }} />
-    </Box>
-
-    <Typography
-      variant="h2"
-      component="h2"
-      sx={{
-        fontSize: "16px",
-        lineHeight: "19px",
-        color: "#414146",
-        background: "#D7C7F4",
-        fontWeight: "700",
-        fontFamily: "Ubuntu",
-        textAlign: "center",
-        width: "90%", // Full width
-        height: "39px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: "10px",
-        marginBottom: 1, // Space between elements
-      }}
-    >
-      Past Conversations
-    </Typography>
-  </Box>
-);
 
 export default App;
