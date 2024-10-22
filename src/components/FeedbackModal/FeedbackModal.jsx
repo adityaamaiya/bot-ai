@@ -73,9 +73,6 @@ const FeedbackModal = ({ open, onClose, onSubmit }) => {
           }}
         />
         <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
-          <Button onClick={onClose} color="secondary" sx={{ marginRight: 1 }}>
-            Cancel
-          </Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
