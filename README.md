@@ -1,70 +1,66 @@
-# Getting Started with Create React App
+# AI Chatbot with Feedback Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is an interactive application where users can chat with an AI model and provide feedback at various stages of the conversation. The application allows users to save multiple conversations, revisit them, and see the feedback they've provided for each chat.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### 1. **Chat with an AI Model**
 
-### `npm start`
+- Users can interact with an AI model and receive responses.
+- Conversations are stored, allowing users to revisit them at any time.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 2. **Feedback Mechanism**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Like/Dislike Buttons**: Users can provide instant feedback on each AI response by hovering over the response. Thumbs up (like) and thumbs down (dislike) buttons appear when hovering.
+<!-- - **Rating System**: At the end of the conversation, users can provide a rating out of 5. The rating can be represented using:
+  - A Likert scale (1–5)
+  - A 5-star rating system -->
+- **Subjective Feedback**: Users can provide their own subjective feedback about the conversation once it is finished.
 
-### `npm test`
+### 3. **Saved Conversations**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Each conversation is saved along with the feedback provided.
+- Conversations can be revisited from the sidebar or top bar.
+- While viewing a past conversation, users can also see the feedback they provided during that conversation.
 
-### `npm run build`
+## Technologies Used
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **React.js**: For building the user interface.
+- **Material UI**: For UI components and responsive design.
+- **React Router**: For managing navigation and routing between pages.
+- **Local Storage**: For saving conversations and feedback across sessions.
+- **Fetch API**: For sending and receiving data from the AI model's API.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Setup and Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/adityaamaiya/bot-ai
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd bot-ai
+   ```
+3. Install dependencies:
+   ```bash
+    npm install
+   ```
+4. start the development server:
+   ```bash
+   npm start
+   ```
 
-### `npm run eject`
+5.The application should now be running at `http://localhost:3000`. 
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Future Enhancements
+- **User Authentication**: Implement user authentication to allow users to save and manage their conversations.
+- **AI Model Integration**: Integrate with different AI models to provide a variety of conversational experiences.
+- **Feedback Analysis**: Analyze user feedback to improve the AI model's responses.
+- **Visualizations**: Create visualizations to display feedback trends over time.
+- **Mobile Responsiveness**: Ensure the application is responsive and usable on mobile devices.
+- **Error Handling**: Improve error handling for a smoother user experience.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## License
+This project is licensed under the MIT License.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
