@@ -1,6 +1,6 @@
-.image{
-    visibility: hidden;
+.image {
+  visibility: hidden;
 }
-image:hover{
-    visibility: visible;
+.image:hover {
+  visibility: visible;
 }

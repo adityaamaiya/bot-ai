@@ -4,26 +4,19 @@ import logo from "../assets/logo2.svg";
 import avatar from "../assets/avatar.svg";
 import like from "../assets/like.svg";
 import dislike from "../assets/dislike.svg";
-import style from "./responsecard.module.css"
+import style from "./responsecard.module.css";
+import { Feedback } from "@mui/icons-material";
 
 export default function ResponseCard({ response }) {
-  const getTime = () => {
-    const currentTime = new Date();
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-    const ampm = hours >= 12 ? "PM" : "AM";
-    const formattedHours = hours % 12 || 12;
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    return `${formattedHours}:${formattedMinutes} ${ampm}`;
-  };
   return (
-    <Box sx={{
-        display:"flex",
-        flexDirection:"column",
-        gap:"15px",
-        width:"100%",
-
-    }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "15px",
+        width: "100%",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -83,7 +76,7 @@ export default function ResponseCard({ response }) {
               lineHeight: "16px",
             }}
           >
-            {getTime()}
+            {response.time}
           </Typography>
         </Box>
       </Box>
@@ -154,10 +147,11 @@ export default function ResponseCard({ response }) {
               },
             }}
           >
-            {getTime()}
+            {response.time}
             <img src={like} alt="like" className={style.image} />
             <img src={dislike} alt="dislike" className={style.image} />
           </Typography>
+          {response.feedback && (<>Feedback : {response.feedback}</>)}
         </Box>
       </Box>
     </Box>
