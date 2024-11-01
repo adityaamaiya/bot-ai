@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "../../theme"; // Import the theme from the file
@@ -65,7 +65,6 @@ function App() {
       setSnackbarOpen(true);
       return;
     }
-
     setIsLoading(true);
     setError(null);
 
@@ -182,6 +181,14 @@ function App() {
     }
     setDrawerOpen(open);
   };
+  const boxRef = useRef();
+
+  useEffect(() => {
+    // Scroll to the bottom initially and when new content is added
+    if (boxRef.current) {
+      boxRef.current.scrollTop = boxRef.current.scrollHeight;
+    }
+  }, [responseArrayState]); // Run whenever children change
 
   return (
     <ThemeProvider theme={theme}>
@@ -250,6 +257,7 @@ function App() {
         </Box>
 
         <Box
+          ref={boxRef}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -260,6 +268,7 @@ function App() {
             padding: { xs: 2, md: 0 }, // Add padding on mobile
             height: { xs: "450px", md: "589px" },
             marginTop: { xs: 2, md: 7 }, // Add margin on mobile
+            scrollBehavior: "smooth", // Enables smooth scrolling
           }}
         >
           {responseArrayState.length === 0 ? (
